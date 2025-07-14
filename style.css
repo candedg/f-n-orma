@@ -1,0 +1,18 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  margin: 0;
+  background-color: black;
+  display: flex;
+  justify-content: center;  /* centrado horizontalmente */
+  align-items: center;      /* centrado verticalmente */
+  height: 100vh;            /* altura completa de la ventana */
+  overflow: hidden;         /* evita scroll */
+}
