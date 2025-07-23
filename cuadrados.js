@@ -21,6 +21,8 @@ class Cuadrados {
     this.fondoConImagen = false;
     this.imagenFondo = null;
 
+    // Almacena la máscara externa con la que se deben detectar colisiones
+    this.mascara = null;
   }
 
   // Permite activar fondo con imagen
@@ -35,7 +37,15 @@ class Cuadrados {
     this.imagenFondo = null;
   }
 
-  
+  // Define la "máscara" externa que será usada para colisiones
+  setMascara(x, y, ancho, alto) {
+    this.mascara = {
+      x: x - ancho / 2,
+      y: y - alto / 2,
+      ancho: ancho,
+      alto: alto
+    };
+  }
 
   // Genera los 15 cuadrados iniciales con posiciones fijas
   crearCuadrados() {
@@ -86,6 +96,7 @@ class Cuadrados {
       this.actualizarCuadrado(i);
     }
     this.verificarColisionesEntreCuadrados();
+    this.verificarColisionesConMascara();
   }
 
   // Movimiento y rebote de cada cuadrado
@@ -127,6 +138,24 @@ class Cuadrados {
     }
   }
 
+  // Colisión con la máscara externa
+  verificarColisionesConMascara() {
+    if (!this.mascara) return;
+
+    for (let c of this.cuadrados) {
+      let colisiona = collideRectRect(
+        c.x - c.tamañoExterior / 2, c.y - c.tamañoExterior / 2, c.tamañoExterior, c.tamañoExterior,
+        this.mascara.x, this.mascara.y, this.mascara.ancho, this.mascara.alto
+      );
+
+      if (colisiona) {
+        c.direccionX *= -1;
+        c.direccionY *= -1;
+        c.x += c.direccionX * c.velocidad * 2;
+        c.y += c.direccionY * c.velocidad * 2;
+      }
+    }
+  }
 
   // Colisión entre dos cuadrados específicos
   verificarColision(i, j) {
