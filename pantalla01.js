@@ -2,6 +2,10 @@
 class Pantalla01 extends Pantalla {
   constructor() {
     super(); // Llama al constructor de la clase base 'Pantalla'
+
+    // Se crea un sistema de cuadrados centrado en pantalla
+    this.cuadrados = new Cuadrados(width / 2, height / 2);
+
   }
 
   // Método principal de dibujo de la escena
@@ -27,9 +31,14 @@ class Pantalla01 extends Pantalla {
     image(flechasImg, 100, 120, 70, 70);
     image(mouseImg, 635, 120, 60, 65);
 
+    // Dibuja los cuadrados dentro del contenedor, sin imagen de fondo
     this.cuadrados.setFondoLiso();
+    this.cuadrados.draw();
+
   }
 
+  // Método vacío: clic del mouse no hace nada por ahora
+  mousePressed() { }
 
   // Responde al teclado: solo avanza si se presiona una flecha y la opacidad de la máscara del círculo está al máximo
   keyPressed() {

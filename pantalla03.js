@@ -32,6 +32,7 @@ class Pantalla03 extends Pantalla {
     // Dibujar todos los cuadrados con sus colisiones
 
     this.cuadrados.setFondoLiso(); // fondo liso gris
+    this.cuadrados.draw();
   }
 
   // -------------------------------------------------------------------------

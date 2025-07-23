@@ -33,6 +33,7 @@ class Pantalla02 extends Pantalla {
     image(mouseImg, 635, 60, 60, 65);
     // Dibujar todos los cuadrados con sus colisiones
     this.cuadrados.setFondoConImagen(fondoImg); // imagen como fondo
+this.cuadrados.draw();
   }
 
   // -------------------------------------------------------------------------
