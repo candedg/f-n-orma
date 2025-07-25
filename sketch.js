@@ -73,6 +73,13 @@ function keyPressed() {
   nav.pantallaActual.keyPressed();   // Propagar teclado a la pantalla actual
 }
 
+function keyReleased() {
+  // Propagar evento de tecla soltada a la pantalla actual (si tiene el método)
+  if (nav.pantallaActual.keyReleased) {
+    nav.pantallaActual.keyReleased();
+  }
+}
+
 // ============================================================================
 // FUNCIONES UTILITARIAS
 // ============================================================================
