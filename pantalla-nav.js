@@ -1,15 +1,21 @@
-// ============================================================================
-//  f‑n‑orma – pantalla-nav.js
-//  ---------------------------------------------------------------------------
-//  ▸ Pantalla de navegación que permite al usuario elegir directamente una escena
-//    del recorrido. Cada botón accede a un índice específico del Navegador.
-// ============================================================================
+// -----------------------------------------------------------------------------
+// PANTALLA NAV — Navegador de escenas del recorrido
+// -----------------------------------------------------------------------------
+// Esta clase hereda de Pantalla y actúa como un menú principal o índice,
+// permitiendo al usuario saltar directamente a cualquier sección del proyecto.
+// Contiene cinco botones que redirigen a distintas pantallas por su índice:
+//  - "PRESENTACIÓN" → PantallaInicial (índice 0)
+//  - "INTEMPERIE"   → Pantalla01      (índice 2)
+//  - "IMPOSICIÓN"   → Pantalla02      (índice 3)
+//  - "EQUILIBRIO"   → Pantalla03      (índice 4)
+//  - "DESENLACE"    → PantallaFinal   (índice 5)
+// -----------------------------------------------------------------------------
 
 class PantallaNav extends Pantalla {
     constructor() {
-        super();
+        super(); // Llama al constructor de la clase base Pantalla
 
-        // Crear botones con sus posiciones e índices de pantalla
+        // Crear botones para navegar a cada sección del recorrido
         this.btnInicio = crearBoton("PRESENTACIÓN", 240, 210, 320, 60, 0);
         this.btnIntemperie = crearBoton("INTEMPERIE", 240, 300, 320, 60, 2);
         this.btnImposicion = crearBoton("IMPOSICION", 240, 390, 320, 60, 3);
@@ -18,15 +24,17 @@ class PantallaNav extends Pantalla {
     }
 
     // -------------------------------------------------------------------------
-    //  DRAW – Renderizado de la escena
+    // DRAW – Renderizado de la pantalla de navegación
+    // Se llama en cada frame mientras esta pantalla esté activa
     // -------------------------------------------------------------------------
     draw() {
-        background("#1E1E28"); // Fondo oscuro
-        dibujarTitulo();      // Título con glitch en la parte superior
+        background("#1E1E28");   // Color de fondo oscuro uniforme
 
-        textFont(jura);       // Fuente común para los botones
+        dibujarTitulo();         // Muestra el título con efecto glitch
 
-        // Dibujar todos los botones
+        textFont(jura);          // Establece la fuente Jura para los botones
+
+        // Dibujar todos los botones uno por uno
         this.btnInicio.draw();
         this.btnIntemperie.draw();
         this.btnImposicion.draw();
@@ -35,7 +43,8 @@ class PantallaNav extends Pantalla {
     }
 
     // -------------------------------------------------------------------------
-    //  Interacción – Clic en cualquiera de los botones
+    // MOUSEPRESSED – Propaga el clic a cada botón
+    // Si el mouse está sobre un botón, se activa su acción asociada
     // -------------------------------------------------------------------------
     mousePressed() {
         this.btnInicio.mousePressed();
@@ -46,7 +55,7 @@ class PantallaNav extends Pantalla {
     }
 
     // -------------------------------------------------------------------------
-    //  Manejo de teclado – (no utilizado)
+    // KEYPRESSED – Método de teclado (no utilizado en esta pantalla)
     // -------------------------------------------------------------------------
     keyPressed() {
         print("no pasa nada");

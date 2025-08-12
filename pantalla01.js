@@ -1,9 +1,11 @@
-// Clase que define la primera escena interactiva del proyecto.
+// -------------------------------------------------------------------------
+//  Clase Pantalla01 – Primera escena interactiva del proyecto
+// -------------------------------------------------------------------------
 class Pantalla01 extends Pantalla {
   constructor() {
     super(); // Llama al constructor de la clase base 'Pantalla'
 
-    // Se crea un sistema de cuadrados centrado en pantalla
+    // Se crea el sistema de cuadrados centrado en pantalla
     this.cuadrados = new Cuadrados(width / 2, height / 2);
 
     // Coordenadas y tamaño inicial de la máscara para el círculo
@@ -21,7 +23,9 @@ class Pantalla01 extends Pantalla {
     this.estuvoenHover = false;   // Indica si estuvo sobre la máscara en el frame anterior
   }
 
-  // Método principal de dibujo de la escena
+  // -------------------------------------------------------------------------
+  //  DRAW – Renderizado de la escena
+  // -------------------------------------------------------------------------
   draw() {
     background("#1E1E28"); // Fondo oscuro de la escena
 
@@ -63,15 +67,17 @@ class Pantalla01 extends Pantalla {
     this.dibujarMascara();
   }
 
-  // Verifica si el mouse está actualmente sobre la máscara y ajusta la opacidad
+  // -------------------------------------------------------------------------
+  //  Verifica si el mouse está actualmente sobre la máscara y ajusta la opacidad
+  // -------------------------------------------------------------------------
   verificarHover() {
     let mitad = this.mascaraTamano / 2;
 
     // Verificación de si el cursor está dentro de los límites del cuadrado
-    this.enHover = mouseX >= this.mascaraX - mitad && 
-                   mouseX <= this.mascaraX + mitad &&
-                   mouseY >= this.mascaraY - mitad && 
-                   mouseY <= this.mascaraY + mitad;
+    this.enHover = mouseX >= this.mascaraX - mitad &&
+      mouseX <= this.mascaraX + mitad &&
+      mouseY >= this.mascaraY - mitad &&
+      mouseY <= this.mascaraY + mitad;
 
     // Si acaba de ingresar al área de hover, se aumenta la opacidad
     if (this.enHover && !this.estuvoenHover) {
@@ -85,7 +91,9 @@ class Pantalla01 extends Pantalla {
     this.estuvoenHover = this.enHover;
   }
 
-  // Dibuja la máscara en pantalla según el valor actual de opacidad
+  // -------------------------------------------------------------------------
+  //  Dibuja la máscara en pantalla según el valor actual de opacidad
+  // -------------------------------------------------------------------------
   dibujarMascara() {
     push();
     rectMode(CENTER);
@@ -104,17 +112,24 @@ class Pantalla01 extends Pantalla {
     pop();
   }
 
-  // Método vacío: clic del mouse no hace nada por ahora
-  mousePressed() {}
+  // -------------------------------------------------------------------------
+  //  Interacción – Clic del mouse, no hace nada
+  // -------------------------------------------------------------------------
+  mousePressed() {
+    print("no pasa nada");
+  }
 
-  // Responde al teclado: solo avanza si se presiona una flecha y la opacidad de la máscara del círculo está al máximo
+  // -------------------------------------------------------------------------
+  //  Interacción – Responde al teclado solo si la máscara está completamente visible
+  // -------------------------------------------------------------------------
   keyPressed() {
-    if (keyCode === UP_ARROW || keyCode === DOWN_ARROW || 
-        keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
-      
+    if (keyCode === UP_ARROW || keyCode === DOWN_ARROW ||
+      keyCode === LEFT_ARROW || keyCode === RIGHT_ARROW) {
+
       if (this.opacidadMascara >= this.maxOpacidad) {
         nav.siguientePantalla(); // Se pasa a la siguiente pantalla del proyecto
-      } 
+        this.opacidadMascara = 0;
+      }
     }
   }
 }

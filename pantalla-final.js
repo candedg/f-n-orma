@@ -1,9 +1,6 @@
-// ============================================================================
-//  f‑n‑orma – pantalla-final.js
-//  ---------------------------------------------------------------------------
-//  ▸ Pantalla de cierre del recorrido. Muestra un texto reflexivo final y un
-//    botón para volver al inicio.
-// ============================================================================
+// -----------------------------------------------------------------------------
+// PANTALLA FINAL — Indica que  se terminó el recorrido y permite volver a empezar
+// -----------------------------------------------------------------------------
 
 class PantallaFinal extends Pantalla {
     constructor() {

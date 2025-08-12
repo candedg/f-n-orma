@@ -1,3 +1,6 @@
+// -------------------------------------------------------------------------
+//  Clase Pantalla03 – Tercera y última escena interactiva del proyecto
+// -------------------------------------------------------------------------
 class Pantalla03 extends Pantalla {
   constructor() {
     super();
@@ -23,6 +26,9 @@ class Pantalla03 extends Pantalla {
     };
   }
 
+  // -------------------------------------------------------------------------
+  //  DRAW – Renderizado de la escena
+  // -------------------------------------------------------------------------
   draw() {
     background("#1E1E28"); // Color base de la escena
 
@@ -128,6 +134,9 @@ class Pantalla03 extends Pantalla {
     }
   }
 
+  // -------------------------------------------------------------------------
+  //  Dibuja la máscara y el círculo interior
+  // -------------------------------------------------------------------------
   dibujarMascara() {
     push();
     ellipseMode(CENTER);
@@ -146,6 +155,9 @@ class Pantalla03 extends Pantalla {
     pop();
   }
 
+  // -------------------------------------------------------------------------
+  //  Interacciones – Responde al teclado para mover los círculos
+  // -------------------------------------------------------------------------
   keyPressed() {
     // Detectar cuando se presiona una tecla
     if (keyCode === UP_ARROW) {
@@ -178,8 +190,14 @@ class Pantalla03 extends Pantalla {
     }
   }
 
+  // -------------------------------------------------------------------------
+  //  Interacción – Clic del mouse pasa a la pantalla del fin
+  // -------------------------------------------------------------------------
   mousePressed() {
-    print("mouse clicked desde pantalla02"); // Debug
+    print("mouse clicked desde pantalla03"); // Debug
+    // Posición inicial reseteada
+    this.mascaraX = undefined;
+    this.mascaraY = undefined;
     nav.siguientePantalla();                // Avanza en el Navegador
   }
 }
