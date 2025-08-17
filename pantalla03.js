@@ -1,23 +1,23 @@
-// -------------------------------------------------------------------------
-//  Clase Pantalla03 – Tercera y última escena interactiva del proyecto
-// -------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+// PANTALLA03 – Tercera y última escena interactiva del proyecto
+// -----------------------------------------------------------------------------
 class Pantalla03 extends Pantalla {
   constructor() {
     super();
 
-    // Crear el sistema de cuadrados centrado en pantalla
+    // Sistema de cuadrados centrado en pantalla
     this.cuadrados = new Cuadrados(width / 2, height / 2);
 
-    // Dimensiones de la máscara y el círculo interior
-    this.diametroMascara = 65;  // Borde exterior
-    this.diametroInterior = 35; // Círculo sólido
+    // Dimensiones de la máscara y del círculo interior
+    this.diametroMascara = 65;   // Borde exterior de la máscara
+    this.diametroInterior = 35;  // Círculo sólido interior
 
-    // Variables para el movimiento
-    this.velocidad = 3; // cuanto se mueve por frame el círculo
-    this.direccionX = 0; // Dirección actual en X (-1, 0, 1)
-    this.direccionY = 0; // Dirección actual en Y (-1, 0, 1)
+    // Variables de movimiento
+    this.velocidad = 3;          // Pixels por frame
+    this.direccionX = 0;         // Dirección X (-1, 0, 1)
+    this.direccionY = 0;         // Dirección Y (-1, 0, 1)
 
-    // Estado de las teclas presionadas
+    // Estado de teclas presionadas
     this.teclas = {
       arriba: false,
       abajo: false,
@@ -26,11 +26,9 @@ class Pantalla03 extends Pantalla {
     };
   }
 
-  // -------------------------------------------------------------------------
-  //  DRAW – Renderizado de la escena
-  // -------------------------------------------------------------------------
+  // DRAW – Renderizado principal de la escena
   draw() {
-    background("#1E1E28"); // Color base de la escena
+    background("#1E1E28"); 
 
     // Textos explicativos
     textFont(jura);
@@ -38,116 +36,106 @@ class Pantalla03 extends Pantalla {
     textAlign(CENTER, CENTER);
     fill("#B0B5C1");
     noStroke();
-    text("Te ves muy diferente a los demás", width / 2, 40);
+    text("Te ves muy diferente a los demas", width / 2, 40);
     textSize(20);
     text("Pero ahora puedes moverte con la misma facilidad", width / 2, 90);
-    // imagen explicativa
+
+    // Imagen ilustrativa de las flechas del teclado
     image(flechasImg, 365, 110, 70, 70);
 
-    // método que se encarga de mover el círculo si se están presionando las teclas
+    // Actualiza la posición de la máscara circular según teclas presionadas
     this.actualizarMovimiento();
 
-    // guarda la posición y tamaño de la máscara circular para que cada cuadrado pueda saber si está tocando esa área
+    // Comunica la posición y tamaño de la máscara a los cuadrados para detectar colisiones
     this.cuadrados.setMascara(this.mascaraX, this.mascaraY, this.diametroMascara, this.diametroMascara);
 
-    // Dibujar los cuadrados
+    // Dibuja los cuadrados sobre el fondo liso
     this.cuadrados.setFondoLiso();
     this.cuadrados.draw();
 
-    // Dibujar la máscara circular (borde + círculo sólido interior)
+    // Dibuja la máscara circular (borde exterior + círculo interior)
     this.dibujarMascara();
   }
 
+  // Actualiza la posición de la máscara según teclas presionadas y colisiones
   actualizarMovimiento() {
-    // Solo se ejecuta una vez para dar una posición inicial a la máscara circular
+    // Posición inicial si aún no fue definida
     if (this.mascaraX === undefined || this.mascaraY === undefined) {
-      // Calcular explícitamente las dimensiones del contenedor
-      // usando la misma lógica que en cuadrados.js
-      const contenedorX = (width - 780) / 2;  // 780 es this.contenedor.ancho
-      const contenedorY = height - 500 - 10;  // 500 es this.contenedor.alto
-
-      // Ponemos la máscara centrada horizontalmente y cerca del borde inferior del contenedor.
+      const contenedorX = (width - 780) / 2;  
+      const contenedorY = height - 500 - 10;  
       this.mascaraX = contenedorX + 780 / 2;
       this.mascaraY = contenedorY + 500 - 50;
     }
 
-    // Reinicia los valores en cada frame
+    // Reinicia direcciones
     this.direccionX = 0;
     this.direccionY = 0;
-    // Detecta si se está presionando alguna tecla, y actualiza la dirección de movimiento en X e Y
+
+    // Actualiza direcciones según teclas presionadas
     if (this.teclas.izquierda) this.direccionX = -1;
     if (this.teclas.derecha) this.direccionX = 1;
     if (this.teclas.arriba) this.direccionY = -1;
     if (this.teclas.abajo) this.direccionY = 1;
 
-    // Solo mover si hay dirección o sea alguna flecha siendo presionada
+    // Solo mover si hay alguna dirección activa
     if (this.direccionX !== 0 || this.direccionY !== 0) {
-      // guarda datos contenedor
       const contenedor = this.cuadrados.contenedor;
-      // guarda la mitad del diámetro de la máscara, para verificar bordes luego
       const radio = this.diametroMascara / 2;
 
-      // Calcular nueva posición tentativa
-      // calcula hacia dónde se movería la máscara si no hubiera obstáculos.
+      // Posición tentativa de la máscara
       let nuevaX = this.mascaraX + (this.direccionX * this.velocidad);
       let nuevaY = this.mascaraY + (this.direccionY * this.velocidad);
 
-      // Limitar dentro de contenedor para evitar salirse de los bordes
+      // Limita dentro del contenedor
       nuevaX = constrain(nuevaX, contenedor.x + radio, contenedor.x + contenedor.ancho - radio);
       nuevaY = constrain(nuevaY, contenedor.y + radio, contenedor.y + contenedor.alto - radio);
 
-      // Verificar colisiones con cuadrados usando p5.collide2d
-      //inicializo variable que es false siempre que no haya colision
+      // Verifica colisiones con los cuadrados
       let colisiona = false;
-      //recorre todos los cuadrados y revisa si hay colision con alguno
       for (let cuadrado of this.cuadrados.cuadrados) {
-        // funcion de la libreria p5.collide2D que simplifica revisar si hay colision entre un circulo y un rectangulo/cuadrado
         if (collideRectCircle(
-          cuadrado.x - cuadrado.tamañoExterior / 2,
-          cuadrado.y - cuadrado.tamañoExterior / 2,
-          cuadrado.tamañoExterior,
-          cuadrado.tamañoExterior,
+          cuadrado.x - cuadrado.tamanoExterior / 2,
+          cuadrado.y - cuadrado.tamanoExterior / 2,
+          cuadrado.tamanoExterior,
+          cuadrado.tamanoExterior,
           nuevaX, nuevaY,
           this.diametroMascara
         )) {
-          colisiona = true; //devuelve true si el circulo se toca o superpone con alguno de los cuadrados
+          colisiona = true;
           break;
         }
       }
 
-      // Si colisiona, invertir direcciones para simular rebote
+      // Si hay colisión, invertir dirección para simular rebote
       if (colisiona) {
         this.direccionX *= -1;
         this.direccionY *= -1;
 
-        // Actualizar nueva posición con dirección invertida, hay que volver a calcular hacia dónde iría con esa dirección invertida.
         nuevaX = this.mascaraX + (this.direccionX * this.velocidad);
         nuevaY = this.mascaraY + (this.direccionY * this.velocidad);
 
-        // Limitar otra vez dentro del contenedor 
         nuevaX = constrain(nuevaX, contenedor.x + radio, contenedor.x + contenedor.ancho - radio);
         nuevaY = constrain(nuevaY, contenedor.y + radio, contenedor.y + contenedor.alto - radio);
       }
-      // actualiza la posicion de la máscara
+
+      // Actualiza la posición final de la máscara
       this.mascaraX = nuevaX;
       this.mascaraY = nuevaY;
     }
   }
 
-  // -------------------------------------------------------------------------
-  //  Dibuja la máscara y el círculo interior
-  // -------------------------------------------------------------------------
+  // Dibuja la máscara circular con borde y círculo interior
   dibujarMascara() {
     push();
     ellipseMode(CENTER);
 
-    // Borde exterior (máscara): sin relleno, con stroke azul oscuro
+    // Borde exterior de la máscara
     noFill();
-    stroke(30, 30, 40); // #1E1E28
+    stroke(30, 30, 40);
     strokeWeight(2);
     ellipse(this.mascaraX, this.mascaraY, this.diametroMascara);
 
-    // Círculo interior: relleno sólido naranja
+    // Círculo interior sólido
     noStroke();
     fill("#F27E63");
     ellipse(this.mascaraX, this.mascaraY, this.diametroInterior);
@@ -155,49 +143,27 @@ class Pantalla03 extends Pantalla {
     pop();
   }
 
-  // -------------------------------------------------------------------------
-  //  Interacciones – Responde al teclado para mover los círculos
-  // -------------------------------------------------------------------------
+  // Detecta teclas presionadas y actualiza estado
   keyPressed() {
-    // Detectar cuando se presiona una tecla
-    if (keyCode === UP_ARROW) {
-      this.teclas.arriba = true;
-    }
-    if (keyCode === DOWN_ARROW) {
-      this.teclas.abajo = true;
-    }
-    if (keyCode === LEFT_ARROW) {
-      this.teclas.izquierda = true;
-    }
-    if (keyCode === RIGHT_ARROW) {
-      this.teclas.derecha = true;
-    }
+    if (keyCode === UP_ARROW) this.teclas.arriba = true;
+    if (keyCode === DOWN_ARROW) this.teclas.abajo = true;
+    if (keyCode === LEFT_ARROW) this.teclas.izquierda = true;
+    if (keyCode === RIGHT_ARROW) this.teclas.derecha = true;
   }
 
+  // Detecta teclas liberadas y actualiza estado
   keyReleased() {
-    // Detectar cuando se suelta una tecla
-    if (keyCode === UP_ARROW) {
-      this.teclas.arriba = false;
-    }
-    if (keyCode === DOWN_ARROW) {
-      this.teclas.abajo = false;
-    }
-    if (keyCode === LEFT_ARROW) {
-      this.teclas.izquierda = false;
-    }
-    if (keyCode === RIGHT_ARROW) {
-      this.teclas.derecha = false;
-    }
+    if (keyCode === UP_ARROW) this.teclas.arriba = false;
+    if (keyCode === DOWN_ARROW) this.teclas.abajo = false;
+    if (keyCode === LEFT_ARROW) this.teclas.izquierda = false;
+    if (keyCode === RIGHT_ARROW) this.teclas.derecha = false;
   }
 
-  // -------------------------------------------------------------------------
-  //  Interacción – Clic del mouse pasa a la pantalla del fin
-  // -------------------------------------------------------------------------
+  // MousePressed: reinicia la posición y avanza a la siguiente pantalla
   mousePressed() {
-    print("mouse clicked desde pantalla03"); // Debug
-    // Posición inicial reseteada
     this.mascaraX = undefined;
     this.mascaraY = undefined;
-    nav.siguientePantalla();                // Avanza en el Navegador
+    this.cuadrados.reiniciar();
+    nav.siguientePantalla();
   }
 }

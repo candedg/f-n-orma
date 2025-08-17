@@ -1,160 +1,152 @@
-// ============================================================================
-//  ALUMNA: CANDELA
-//  f‑n‑orma – sketch.js
+// -----------------------------------------------------------------------------
+//  ALUMNA: CANDELA DI GENOVA
 // -----------------------------------------------------------------------------
 // ARCHIVO PRINCIPAL DEL SKETCH - Configura la navegación entre pantallas,
 // carga recursos, y define efectos visuales como el título glitch animado.
 // -----------------------------------------------------------------------------
-// ============================================================================
 
-// INavegador de pantallas, gestiona el flujo visual del programa.
+// Navegador de pantallas: gestiona el flujo visual del programa
 let nav = new Navegador();
 
-// Variables para las fuentes tipográficas del proyecto.
-let orbitron; // Fuente para el título
-let jura;     // Fuente para el resto de los textos del sitio
+// Fuentes tipográficas del proyecto
+let orbitron; // Fuente para el título animado
+let jura;     // Fuente para textos y botones
 
-// Variables para imágenes utilizadas en distintas pantallas (íconos e imagen de fondo).
+// Imágenes utilizadas en distintas pantallas
 let flechasImg;
 let mouseImg;
 let fondoImg;
+let spaceImg;
 
-// Configuración general del efecto de "glitch" para el título animado.
-const palabras = ["Forma", "Norma"];  // Palabras que se alternan con el efecto glitch.
-let indice = 0;                        // Índice de la palabra actualmente mostrada.
-const tiempoCambio = 2000;            // Tiempo en milisegundos entre cada cambio de palabra.
-let ultimoCambio = 0;                 // Timestamp del último cambio realizado.
-const glitchDuracion = 200;           // Duración del efecto glitch una vez activado (en ms).
-let enGlitch = false;                 // Flag que indica si el efecto glitch está activo en este momento.
+// Sonidos de la aplicación
+let sonidoHover;
+let sonidoClick;
+let sonidoSubirOpacidad;
+let sonidoColision;
 
-// -----------------------------------------------------------------------------
-// PRELOAD: carga previa de recursos multimedia antes de iniciar el programa.
-// -----------------------------------------------------------------------------
+// Configuración del efecto "glitch" del título
+const palabras = ["Forma", "Norma"]; // Palabras que alternan con efecto glitch
+let indice = 0;                       // Palabra actualmente mostrada
+const tiempoCambio = 2000;            // Tiempo entre cambios de palabra (ms)
+let ultimoCambio = 0;                 // Timestamp del último cambio
+const glitchDuracion = 200;           // Duración del efecto glitch (ms)
+let enGlitch = false;                 // Indica si el glitch está activo
+
+// PRELOAD: carga previa de recursos multimedia antes de iniciar el programa
 function preload() {
-  // Precarga de fuentes tipográficas.
+  // Carga de fuentes tipográficas
   orbitron = loadFont("assets/fonts/Orbitron-Black.ttf");
   jura = loadFont("assets/fonts/Jura-Bold.ttf");
 
-  // Precarga de imágenes.
+  // Carga de imágenes
   flechasImg = loadImage("assets/img/flechas.png");
   mouseImg = loadImage("assets/img/mouse.png");
   fondoImg = loadImage("assets/img/grietas.png");
+  spaceImg = loadImage("assets/img/space.png");
+
+  // Carga de sonidos
+  sonidoHover = loadSound("assets/sounds/hover.mp3");
+  sonidoClick = loadSound("assets/sounds/click.mp3");
+  sonidoSubirOpacidad = loadSound("assets/sounds/subir-opacidad.mp3");
+  sonidoColision = loadSound("assets/sounds/colision.mp3");
 }
 
-// -----------------------------------------------------------------------------
-// SETUP: configuración inicial del lienzo y el sistema de navegación.
-// -----------------------------------------------------------------------------
+// SETUP: configuración inicial del lienzo y sistema de navegación
 function setup() {
-  createCanvas(800, 700);  // Crea un lienzo de tamaño fijo (centrado por CSS).
-  textFont(jura);          // Establece la fuente base como predeterminada.
-  cargarPantallas();       // Registra todas las pantallas que se utilizarán.
+  createCanvas(800, 700);  // Lienzo fijo
+  textFont(jura);          // Fuente predeterminada
+  cargarPantallas();       // Registra todas las pantallas en el navegador
 }
 
-// -----------------------------------------------------------------------------
-// DRAW: loop principal que delega el render a la pantalla activa.
-// -----------------------------------------------------------------------------
+// DRAW: loop principal que delega renderizado a la pantalla activa
 function draw() {
-  nav.pantallaActual.draw();  // Llama al método draw() de la pantalla actual.
+  nav.pantallaActual.draw();
 }
 
-// -----------------------------------------------------------------------------
-// EVENTOS DE INTERACCIÓN: mouse y teclado son delegados a la pantalla activa.
-// -----------------------------------------------------------------------------
-
+// EVENTOS DE INTERACCIÓN: delegación de mouse y teclado a la pantalla activa
 function mousePressed() {
-  nav.pantallaActual.mousePressed(); // Pasa el clic del mouse a la pantalla activa.
+  nav.pantallaActual.mousePressed();
 }
 
 function keyPressed() {
-  nav.pantallaActual.keyPressed();   // Pasa la tecla presionada a la pantalla activa.
+  nav.pantallaActual.keyPressed();
 }
 
 function keyReleased() {
-  // Solo propaga el evento si la pantalla implementa el método keyReleased.
   if (nav.pantallaActual.keyReleased) {
     nav.pantallaActual.keyReleased();
   }
 }
 
-// -----------------------------------------------------------------------------
-// 1. FUNCIÓN PARA REGISTRAR PANTALLAS EN EL NAVEGADOR
-// -----------------------------------------------------------------------------
+// Función para registrar todas las pantallas en el navegador
 function cargarPantallas() {
   const pantallas = [
-    new PantallaInicial(),  // Índice 0: pantalla de inicio.
-    new PantallaNav(),      // Índice 1: menú de navegación.
-    new Pantalla01(),       // Índice 2: pantalla 1.
-    new Pantalla02(),       // Índice 3: pantalla 2.
-    new Pantalla03(),       // Índice 4: pantalla 3.
-    new PantallaFinal()     // Índice 5: pantalla final o cierre.
+    new PantallaInicial(),  // Índice 0: pantalla de inicio
+    new PantallaNav(),      // Índice 1: menú de navegación
+    new Pantalla01(),       // Índice 2: primera escena
+    new Pantalla02(),       // Índice 3: segunda escena
+    new Pantalla03(),       // Índice 4: tercera escena
+    new PantallaFinal()     // Índice 5: pantalla final
   ];
 
-  // Agrega cada pantalla al navegador.
   pantallas.forEach(p => nav.agregarPantalla(p));
 }
 
-// -----------------------------------------------------------------------------
-// 2. EFECTO GLITCH DEL TÍTULO
-// -----------------------------------------------------------------------------
+// Dibuja el título con efecto glitch
 function dibujarTitulo() {
-  const ahora = millis();  // Tiempo actual desde el inicio del sketch.
+  const ahora = millis();
 
-  // Verifica si pasó el tiempo necesario para cambiar la palabra.
+  // Cambio de palabra según tiempo transcurrido
   if (ahora - ultimoCambio > tiempoCambio) {
-    enGlitch = true;                     // Activa el glitch 
-    ultimoCambio = ahora;               // Actualiza la marca de tiempo
-    indice = (indice + 1) % palabras.length; // Avanza al siguiente texto
+    enGlitch = true;
+    ultimoCambio = ahora;
+    indice = (indice + 1) % palabras.length;
   }
 
-  push(); // Guarda el estado gráfico actual para no afectar otros elementos
-
-  //como se ve el titulo
+  push();
   textFont(orbitron);
   textSize(80);
   textAlign(CENTER, CENTER);
 
-  // Decide si mostrar el glitch o el texto normal.
   if (enGlitch) {
-    glitchTexto(palabras[indice]); // Aplica el efecto visual.
-    if (ahora - ultimoCambio > glitchDuracion) enGlitch = false; // Fin del glitch.
+    glitchTexto(palabras[indice]); // Efecto glitch
+    if (ahora - ultimoCambio > glitchDuracion) enGlitch = false;
   } else {
-    mostrarTexto(palabras[indice]); // Muestra el texto de forma normal.
+    mostrarTexto(palabras[indice]); // Texto normal
   }
 
-  pop(); // Restaura el estado gráfico anterior.
+  pop();
 }
 
-// Función para mostrar texto estático sin efecto.
+// Muestra texto estático sin efecto
 function mostrarTexto(txt) {
-  fill("#F27E63"); // Color coral principal.
+  fill("#F27E63"); 
   noStroke();
-  text(txt, width / 2, 100); // Dibuja el texto centrado en la parte superior.
+  text(txt, width / 2, 100);
 }
 
-// Función para generar el efecto glitch con múltiples copias desfasadas.
+// Genera efecto glitch con copias desfasadas y transparencia
 function glitchTexto(txt) {
   noStroke();
   for (let i = 0; i < 5; i++) {
-    const dx = random(-3, 3); // Desplazamiento aleatorio horizontal.
-    const dy = random(-3, 3); // Desplazamiento aleatorio vertical.
-    fill(242, 126, 99, 150);  // Mismo color con transparencia (#F27E63).
-    text(txt, width / 2 + dx, 100 + dy); // Dibuja el texto desfasado.
+    const dx = random(-3, 3);
+    const dy = random(-3, 3);
+    fill(242, 126, 99, 150);
+    text(txt, width / 2 + dx, 100 + dy);
   }
 }
 
-// -----------------------------------------------------------------------------
-// 3. BOTONES PERSONALIZADOS - facilita la creación de botones.
-// -----------------------------------------------------------------------------
+// Función para crear botones personalizados 
 function crearBoton(texto, x, y, ancho, alto, indicePantalla) {
   return new Boton(
-    texto,       // Texto que se mostrará en el botón.
-    x, y,        // Posición del botón.
-    ancho, alto, // Tamaño del botón.
-    50,          // Radio de las esquinas
-    "#B0B5C1",   // Color de fondo normal
-    "#1E1E28",   // Color de texto normal
-    "#F27E63",   // Color de fondo en hover
-    "#1E1E28",   // Color de texto en hover
-    () => nav.selectPantalla(indicePantalla) // Acción al hacer clic → cambiar de pantalla.
+    texto,       // Texto visible
+    x, y,        // Posición
+    ancho, alto, // Tamaño
+    50,          // Radio de esquinas
+    "#B0B5C1",   // Color fondo normal
+    "#1E1E28",   // Color texto normal
+    "#F27E63",   // Color fondo hover
+    "#1E1E28",   // Color texto hover
+    () => nav.selectPantalla(indicePantalla) // Acción al clic
   );
 }

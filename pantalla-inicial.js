@@ -1,85 +1,70 @@
 // -----------------------------------------------------------------------------
 // PANTALLA INICIAL — Presentación y navegación principal del proyecto
 // -----------------------------------------------------------------------------
-// Esta clase hereda de Pantalla y representa la portada o bienvenida.
-// Contiene un título animado, un texto poético introductorio y dos botones:
-//  - "COMENZAR" para ir a la primera escena (índice 2)
-//  - "ESCENAS" para navegar entre las distintas pantallas (índice 1)
+// Esta clase hereda de Pantalla y funciona como portada o bienvenida.
+// Contiene:
+//  - Un título animado con efecto glitch
+//  - Un texto introductorio con tono poético
+//  - Dos botones principales para avanzar:
+//      • "COMENZAR" → dirige a la primera escena (índice 2)
+//      • "ESCENAS"  → permite navegar entre distintas pantallas (índice 1)
+//  - Datos de estudiante
 // -----------------------------------------------------------------------------
 
 class PantallaInicial extends Pantalla {
     constructor() {
         super(); // Llama al constructor de la clase base Pantalla
 
-        // Crear botones interactivos específicos de esta pantalla:
-        // Cada uno invoca a `crearBoton()` con su texto, posición y destino.
-        this.btnComenzar = crearBoton("COMENZAR", 80, 520, 280, 70, 2); // → Pantalla 01
-        this.btnEscenas  = crearBoton("ESCENAS",  440, 520, 280, 70, 1); // → Navegador de escenas
+        // Crear botones interactivos específicos de esta pantalla
+        this.btnComenzar = crearBoton("COMENZAR", 80, 520, 280, 70, 2); // Ir a Pantalla 01
+        this.btnEscenas  = crearBoton("ESCENAS",  440, 520, 280, 70, 1); // Abrir navegador de escenas
     }
 
-    // -------------------------------------------------------------------------
-    // DRAW: método principal de renderizado de la pantalla inicial.
-    // Se ejecuta en cada frame mientras esta pantalla esté activa.
-    // -------------------------------------------------------------------------
+    // DRAW — Renderizado visual de la pantalla inicial
     draw() {
-        background("#1E1E28");    // Color de fondo oscuro uniforme
+        background("#1E1E28");    // Fondo uniforme y oscuro
+        dibujarTitulo();          // Título animado con efecto glitch
+        this.dibujarTexto();      // Texto introductorio reflexivo
 
-        dibujarTitulo();          // Dibuja el título animado con efecto glitch
-
-        this.dibujarTexto();      // Muestra el texto introductorio
-
-        textFont(jura);           // Asegura que la fuente Jura esté aplicada a los botones
-
-        // Dibujar los botones en pantalla
-        this.btnComenzar.draw();
-        this.btnEscenas.draw();
+        textFont(jura);           // Estilo de fuente aplicado a los botones
+        this.btnComenzar.draw();  // Botón "COMENZAR"
+        this.btnEscenas.draw();   // Botón "ESCENAS"
     }
 
-    // -------------------------------------------------------------------------
-    // MOUSEPRESSED: delega el clic del mouse a los botones.
-    // -------------------------------------------------------------------------
+    // MOUSEPRESSED — Delegación del clic a los botones
     mousePressed() {
-        this.btnComenzar.mousePressed(); // Activa si el mouse está sobre "COMENZAR"
-        this.btnEscenas.mousePressed();  // Activa si el mouse está sobre "ESCENAS"
+        this.btnComenzar.mousePressed();
+        this.btnEscenas.mousePressed();
     }
 
-    // -------------------------------------------------------------------------
-    // KEYPRESSED: método opcional para interacción con teclado.
-    // En esta pantalla no se usa.
-    // -------------------------------------------------------------------------
+    // KEYPRESSED — Interacción opcional con teclado (no utilizada aquí)
     keyPressed() {
-        print("no pasa nada"); // Mensaje por defecto para dejar constancia
     }
 
-    // -------------------------------------------------------------------------
-    // DIBUJARTEXTO: muestra un texto de introducción dividido en frases.
-    // Busca generar un tono reflexivo y abrir el sentido del recorrido.
-    // -------------------------------------------------------------------------
+    // DIBUJARTEXTO — Texto introductorio y créditos
     dibujarTexto() {
-        push(); // Guarda el estado gráfico actual
-
-        //como se ve el texto
+        push();
         textFont(jura);           
         textSize(25);             
         textAlign(CENTER, CENTER); 
         fill("#B0B5C1");         
         noStroke();
 
-        // Frases organizadas por bloques visuales
+        // Texto principal en frases breves
         text("Un recorrido por la incomodidad de", width / 2, 220);
         text("intentar habitar una forma impuesta.", width / 2, 250);
 
         text("En el proceso, algo se quiebra…", width / 2, 320);
         text("Y algo nuevo comienza a moverse.", width / 2, 350);
 
-        text("Dejate llevar. ", width / 2, 420);
+        text("Dejate llevar.", width / 2, 420);
         text("Cada escena guiará tus interacciones.", width / 2, 450);
 
-        // Firma y créditos (tamaño más pequeño)
+        // Firma y créditos
         textSize(18);
         text("Autora: Candela S. Di Genova", width / 2, 660);
         text("UNA - Artes Multimediales", width / 2, 680);
 
-        pop(); // Restaura el estado gráfico anterior
+        pop();
     }
 }
